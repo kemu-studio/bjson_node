@@ -436,3 +436,4 @@ function encode(object, callerCtx = {})
 //
 
 K.BJSON.encode = encode
+module.exports = encode

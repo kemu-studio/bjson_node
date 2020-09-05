@@ -498,3 +498,4 @@ function decode(buffer, callerCtx = {})
 //
 
 K.BJSON.decode = decode
+module.exports = decode
