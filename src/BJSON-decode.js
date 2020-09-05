@@ -5,8 +5,7 @@ require('./BJSON-constants.js')
 
 const BJSON_DECODE_LOGS_LEVEL = 0
 
-function _throwCorruptedData(ext = {})
-{
+function _throwCorruptedData(ext = {}) {
   throw new K.Error({errorCode: 'corruptedData', ext: ext})
 }
 
@@ -16,12 +15,10 @@ function _throwCorruptedData(ext = {})
 //
 // ----------------------------------------------------------------------------
 
-function _checkInputBufferSpace(numberOfExtraBytesNeeded, decodeCtx)
-{
+function _checkInputBufferSpace(numberOfExtraBytesNeeded, decodeCtx) {
   const numberOfBytesRemaining = decodeCtx.inData.length - decodeCtx.inDataIdx
 
-  if (numberOfBytesRemaining < numberOfExtraBytesNeeded)
-  {
+  if (numberOfBytesRemaining < numberOfExtraBytesNeeded) {
     _throwCorruptedData({
       reason: 'unexpectedEndOfInputBuffer',
       offset: decodeCtx.inDataIdx,
@@ -31,14 +28,12 @@ function _checkInputBufferSpace(numberOfExtraBytesNeeded, decodeCtx)
   }
 }
 
-function _popRaw_BYTE(decodeCtx)
-{
+function _popRaw_BYTE(decodeCtx) {
   _checkInputBufferSpace(1, decodeCtx)
 
   const rv = decodeCtx.inData.readUInt8(decodeCtx.inDataIdx)
 
-  if (BJSON_DECODE_LOGS_LEVEL > 0)
-  {
+  if (BJSON_DECODE_LOGS_LEVEL > 0) {
     K.BJSON._debugLog('read byte', rv, 'from offset', decodeCtx.inDataIdx)
   }
 
@@ -47,14 +42,12 @@ function _popRaw_BYTE(decodeCtx)
   return rv
 }
 
-function _popRaw_WORD(decodeCtx)
-{
+function _popRaw_WORD(decodeCtx) {
   _checkInputBufferSpace(2, decodeCtx)
 
   const rv = decodeCtx.inData.readUInt16LE(decodeCtx.inDataIdx)
 
-  if (BJSON_DECODE_LOGS_LEVEL > 0)
-  {
+  if (BJSON_DECODE_LOGS_LEVEL > 0) {
     K.BJSON._debugLog('read word', rv, 'from offset', decodeCtx.inDataIdx)
   }
 
@@ -63,14 +56,12 @@ function _popRaw_WORD(decodeCtx)
   return rv
 }
 
-function _popRaw_DWORD(decodeCtx)
-{
+function _popRaw_DWORD(decodeCtx) {
   _checkInputBufferSpace(4, decodeCtx)
 
   const rv = decodeCtx.inData.readUInt32LE(decodeCtx.inDataIdx)
 
-  if (BJSON_DECODE_LOGS_LEVEL > 0)
-  {
+  if (BJSON_DECODE_LOGS_LEVEL > 0) {
     K.BJSON._debugLog('read word', rv, 'from offset', decodeCtx.inDataIdx)
   }
 
@@ -79,20 +70,17 @@ function _popRaw_DWORD(decodeCtx)
   return rv
 }
 
-function _popRaw_QWORD(decodeCtx)
-{
+function _popRaw_QWORD(decodeCtx) {
   // 64-bit integers are not supported in JS.
   K.Error.throwNotImplemented('_popRaw_QWORD')
 }
 
-function _popRaw_FLOAT32(decodeCtx)
-{
+function _popRaw_FLOAT32(decodeCtx) {
   _checkInputBufferSpace(4, decodeCtx)
 
   const rv = decodeCtx.inData.readFloatLE(decodeCtx.inDataIdx)
 
-  if (BJSON_DECODE_LOGS_LEVEL > 0)
-  {
+  if (BJSON_DECODE_LOGS_LEVEL > 0) {
     K.BJSON._debugLog('read float32', rv, 'from offset', decodeCtx.inDataIdx)
   }
 
@@ -101,14 +89,12 @@ function _popRaw_FLOAT32(decodeCtx)
   return rv
 }
 
-function _popRaw_FLOAT64(decodeCtx)
-{
+function _popRaw_FLOAT64(decodeCtx) {
   _checkInputBufferSpace(8, decodeCtx)
 
   const rv = decodeCtx.inData.readDoubleLE(decodeCtx.inDataIdx)
 
-  if (BJSON_DECODE_LOGS_LEVEL > 0)
-  {
+  if (BJSON_DECODE_LOGS_LEVEL > 0) {
     K.BJSON._debugLog('read float64', rv, 'from offset', decodeCtx.inDataIdx)
   }
 
@@ -124,16 +110,14 @@ function _popRaw_FLOAT64(decodeCtx)
 //
 // --------------------------------------------------------------------------
 
-function _decodeInCtx_stringBody(bodyByteSize, decodeCtx)
-{
+function _decodeInCtx_stringBody(bodyByteSize, decodeCtx) {
   _checkInputBufferSpace(bodyByteSize, decodeCtx)
 
   const startIdx = decodeCtx.inDataIdx
   const endIdx   = startIdx + bodyByteSize
   const rv       = decodeCtx.inData.toString('utf8', startIdx, endIdx)
 
-  if (BJSON_DECODE_LOGS_LEVEL > 0)
-  {
+  if (BJSON_DECODE_LOGS_LEVEL > 0) {
     K.BJSON._debugLog(
       'read',
       bodyByteSize,
@@ -146,21 +130,18 @@ function _decodeInCtx_stringBody(bodyByteSize, decodeCtx)
   return rv
 }
 
-function _decodeInCtx_binaryBody(bodyByteSize, decodeCtx)
-{
+function _decodeInCtx_binaryBody(bodyByteSize, decodeCtx) {
   K.BJSON._checkInputBufferSpace(bodyByteSize, decodeCtx)
 
   const startIdx = decodeCtx.inDataIdx
 
   let rv = new ArrayBuffer(bodyByteSize)
 
-  for (let idx = 0; idx < bodyByteSize; idx++)
-  {
+  for (let idx = 0; idx < bodyByteSize; idx++) {
     rv[idx] = decodeCtx.inData[startIdx + idx]
   }
 
-  if (BJSON_DECODE_LOGS_LEVEL > 0)
-  {
+  if (BJSON_DECODE_LOGS_LEVEL > 0) {
     K.BJSON._debugLog(
       'read',
       bodyByteSize,
@@ -173,8 +154,7 @@ function _decodeInCtx_binaryBody(bodyByteSize, decodeCtx)
   return rv
 }
 
-function _decodeInCtx_arrayBody(bodyByteSize, decodeCtx)
-{
+function _decodeInCtx_arrayBody(bodyByteSize, decodeCtx) {
   _checkInputBufferSpace(bodyByteSize, decodeCtx)
 
   let rv = []
@@ -182,13 +162,11 @@ function _decodeInCtx_arrayBody(bodyByteSize, decodeCtx)
   const startIdx = decodeCtx.inDataIdx
   const endIdx   = startIdx + bodyByteSize
 
-  while (decodeCtx.inDataIdx < endIdx)
-  {
+  while (decodeCtx.inDataIdx < endIdx) {
     rv.push(_decodeInCtx(decodeCtx))
   }
 
-  if (decodeCtx.inDataIdx != endIdx)
-  {
+  if (decodeCtx.inDataIdx != endIdx) {
     // Inconsistent data, don't go on anymore.
     _throwCorruptedData({
       reason: 'inconsistentData',
@@ -199,16 +177,14 @@ function _decodeInCtx_arrayBody(bodyByteSize, decodeCtx)
     })
   }
 
-  if (BJSON_DECODE_LOGS_LEVEL > 0)
-  {
+  if (BJSON_DECODE_LOGS_LEVEL > 0) {
     K.BJSON._debugLog('read', rv.length, 'items from offset', startIdx)
   }
 
   return rv
 }
 
-function _decodeInCtx_mapBody(bodyByteSize, decodeCtx)
-{
+function _decodeInCtx_mapBody(bodyByteSize, decodeCtx) {
   _checkInputBufferSpace(bodyByteSize, decodeCtx)
 
   let rv    = {}
@@ -219,16 +195,14 @@ function _decodeInCtx_mapBody(bodyByteSize, decodeCtx)
   const startIdx = decodeCtx.inDataIdx
   const endIdx   = startIdx + bodyByteSize
 
-  while (decodeCtx.inDataIdx < endIdx)
-  {
+  while (decodeCtx.inDataIdx < endIdx) {
     key   = _decodeInCtx(decodeCtx)
     value = _decodeInCtx(decodeCtx)
     rv[key] = value
     cnt++
   }
 
-  if (decodeCtx.inDataIdx != endIdx)
-  {
+  if (decodeCtx.inDataIdx != endIdx) {
     // Inconsistent data, don't go on anymore.
     _throwCorruptedData({
       reason: 'inconsistentData',
@@ -239,23 +213,20 @@ function _decodeInCtx_mapBody(bodyByteSize, decodeCtx)
     })
   }
 
-  if (BJSON_DECODE_LOGS_LEVEL > 0)
-  {
+  if (BJSON_DECODE_LOGS_LEVEL > 0) {
     K.BJSON._debugLog('read', cnt, '{key->value} pairs from offset', startIdx)
   }
 
   return rv
 }
 
-function _decodeInCtx(decodeCtx)
-{
+function _decodeInCtx(decodeCtx) {
   let outData      = null
   let bodyByteSize = 0
 
   const dataType = _popRaw_BYTE(decodeCtx)
 
-  switch(dataType)
-  {
+  switch(dataType) {
     //
     // Basic primitives.
     //
@@ -299,14 +270,14 @@ function _decodeInCtx(decodeCtx)
     case K.BJSON.DATATYPE_FLOAT32_OBSOLETE:
     case K.BJSON.DATATYPE_FLOAT32:
     {
-      outData = _popRaw_FLOAT32(decodeCtx);
+      outData = _popRaw_FLOAT32(decodeCtx)
       break
     }
 
     case K.BJSON.DATATYPE_FLOAT64_OBSOLETE:
     case K.BJSON.DATATYPE_FLOAT64:
     {
-      outData = _popRaw_FLOAT64(decodeCtx);
+      outData = _popRaw_FLOAT64(decodeCtx)
       break
     }
 
@@ -456,19 +427,15 @@ function _decodeInCtx(decodeCtx)
 //
 // --------------------------------------------------------------------------
 
-function decode(buffer, callerCtx = {})
-{
+function decode(buffer, callerCtx = {}) {
   let outJson = null
 
-  if (buffer.length == 0)
-  {
+  if (buffer.length == 0) {
     // Error, empty buffer passed.
     _throwCorruptedData({
       reason: 'emptyInput'
     })
-  }
-  else
-  {
+  } else {
     // Input buffer looks ok at first glance. Go on.
     let decodeCtx = K.Object.deepClone(callerCtx)
 
@@ -479,8 +446,7 @@ function decode(buffer, callerCtx = {})
     // Check do all bytes processed.
     const remainingBytes = decodeCtx.inData.length - decodeCtx.inDataIdx
 
-    if (remainingBytes > 0)
-    {
+    if (remainingBytes > 0) {
       // Inconsistent data error - don't go anymore.
       _throwCorruptedData({
         reason: 'remainingBytes',

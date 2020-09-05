@@ -11,10 +11,8 @@ const BJSON_ENCODE_LOGS_LEVEL = 0
 //
 // ----------------------------------------------------------------------------
 
-function _prepareOutDataBuffer(numberOfExtraBytesNeeded, encodeCtx)
-{
-  if (encodeCtx.outDataCapacity - encodeCtx.outDataSize < numberOfExtraBytesNeeded)
-  {
+function _prepareOutDataBuffer(numberOfExtraBytesNeeded, encodeCtx) {
+  if (encodeCtx.outDataCapacity - encodeCtx.outDataSize < numberOfExtraBytesNeeded) {
     // Not enough space - resize buffer.
     const oldOutData          = encodeCtx.outData
     encodeCtx.outDataCapacity = Math.max(encodeCtx.outDataCapacity * 2, encodeCtx.outDataCapacity + numberOfExtraBytesNeeded)
@@ -22,17 +20,14 @@ function _prepareOutDataBuffer(numberOfExtraBytesNeeded, encodeCtx)
 
     oldOutData.copy(encodeCtx.outData, 0, 0, encodeCtx.outDataSize)
 
-    if (BJSON_ENCODE_LOGS_LEVEL > 0)
-    {
+    if (BJSON_ENCODE_LOGS_LEVEL > 0) {
       K.BJSON._debugLog('resized outData buffer to', encodeCtx.outDataCapacity)
     }
   }
 }
 
-function _putRaw_BYTE(value8, encodeCtx)
-{
-  if (BJSON_ENCODE_LOGS_LEVEL > 0)
-  {
+function _putRaw_BYTE(value8, encodeCtx) {
+  if (BJSON_ENCODE_LOGS_LEVEL > 0) {
     K.BJSON._debugLog(
       'going to put byte',
       value8,
@@ -45,10 +40,8 @@ function _putRaw_BYTE(value8, encodeCtx)
   encodeCtx.outDataSize++
 }
 
-function _putRaw_WORD(value16, encodeCtx)
-{
-  if (BJSON_ENCODE_LOGS_LEVEL > 0)
-  {
+function _putRaw_WORD(value16, encodeCtx) {
+  if (BJSON_ENCODE_LOGS_LEVEL > 0) {
     K.BJSON._debugLog(
       'going to put word',
       value16,
@@ -61,10 +54,8 @@ function _putRaw_WORD(value16, encodeCtx)
   encodeCtx.outDataSize += 2
 }
 
-function _putRaw_DWORD(value32, encodeCtx)
-{
-  if (BJSON_ENCODE_LOGS_LEVEL > 0)
-  {
+function _putRaw_DWORD(value32, encodeCtx) {
+  if (BJSON_ENCODE_LOGS_LEVEL > 0) {
     K.BJSON._debugLog(
       'going to put double word',
       value32,
@@ -77,16 +68,13 @@ function _putRaw_DWORD(value32, encodeCtx)
   encodeCtx.outDataSize += 4
 }
 
-function _putRaw_QWORD(value64, encodeCtx)
-{
+function _putRaw_QWORD(value64, encodeCtx) {
   // 64-bit integers are not supported in JS.
   K.Error.throwNotImplemented('_putRaw_QWORD')
 }
 
-function _putRaw_FLOAT64(value64, encodeCtx)
-{
-  if (BJSON_ENCODE_LOGS_LEVEL > 0)
-  {
+function _putRaw_FLOAT64(value64, encodeCtx) {
+  if (BJSON_ENCODE_LOGS_LEVEL > 0) {
     K.BJSON._debugLog(
       'going to put double float64',
       value64,
@@ -99,29 +87,24 @@ function _putRaw_FLOAT64(value64, encodeCtx)
   encodeCtx.outDataSize += 8
 }
 
-function _setOutDataPointer(offset, encodeCtx)
-{
+function _setOutDataPointer(offset, encodeCtx) {
   // Avoid moving pointer out of the buffer.
   const numberOfExtraBytesNeeded = offset - encodeCtx.outDataCapacity + 1
 
-  if (numberOfExtraBytesNeeded > 0)
-  {
+  if (numberOfExtraBytesNeeded > 0) {
     _prepareOutDataBuffer(numberOfExtraBytesNeeded, encodeCtx)
   }
 
   // Move pointer.
   encodeCtx.outDataSize = offset
 
-  if (BJSON_ENCODE_LOGS_LEVEL > 0)
-  {
+  if (BJSON_ENCODE_LOGS_LEVEL > 0) {
     K.BJSON._debugLog('moved outData pointer to', offset)
   }
 }
 
-function _outDataCopy(dstOffset, srcOffset, byteLen, encodeCtx)
-{
-  if (BJSON_ENCODE_LOGS_LEVEL > 0)
-  {
+function _outDataCopy(dstOffset, srcOffset, byteLen, encodeCtx) {
+  if (BJSON_ENCODE_LOGS_LEVEL > 0) {
     K.BJSON._debugLog(
       'going to copy',
       byteLen,
@@ -145,89 +128,63 @@ function _outDataCopy(dstOffset, srcOffset, byteLen, encodeCtx)
 //
 // --------------------------------------------------------------------------
 
-function _encodeInCtx_Null(encodeCtx)
-{
+function _encodeInCtx_Null(encodeCtx) {
   _putRaw_BYTE(K.BJSON.DATATYPE_NULL, encodeCtx)
 }
 
-function _encodeInCtx_Boolean(value, encodeCtx)
-{
-  if (value)
-  {
+function _encodeInCtx_Boolean(value, encodeCtx) {
+  if (value) {
     _putRaw_BYTE(K.BJSON.DATATYPE_STRICT_TRUE, encodeCtx)
-  }
-  else
-  {
+  } else {
     _putRaw_BYTE(K.BJSON.DATATYPE_STRICT_FALSE, encodeCtx)
   }
 }
 
-function _encodeInCtx_SizedDataType(dataTypeBase, size, encodeCtx)
-{
-  if (size < 0)
-  {
+function _encodeInCtx_SizedDataType(dataTypeBase, size, encodeCtx) {
+  if (size < 0) {
     throw new K.Error({errorCode: 'negativeSize', ext: {size: size}})
-  }
-  else if (size <= 0xff)
-  {
+  } else if (size <= 0xff) {
     // Compact to single byte (uint8).
     _putRaw_BYTE(dataTypeBase + K.BJSON.DATASIZE_BYTE, encodeCtx)
     _putRaw_BYTE(size, encodeCtx)
-  }
-  else if (size <= 0xffff)
-  {
+  } else if (size <= 0xffff) {
     // Compact to single word (uint16).
     _putRaw_BYTE(dataTypeBase + K.BJSON.DATASIZE_WORD, encodeCtx)
     _putRaw_WORD(size, encodeCtx)
-  }
-  else if (size <= 0xffffffff)
-  {
+  } else if (size <= 0xffffffff) {
     // Compact to double word (uint32).
     _putRaw_BYTE(dataTypeBase + K.BJSON.DATASIZE_DWORD, encodeCtx)
     _putRaw_DWORD(size, encodeCtx)
-  }
-  else
-  {
+  } else {
     // Last try - use quad word (uint64).
     _putRaw_BYTE(dataTypeBase + K.BJSON.DATASIZE_QWORD, encodeCtx)
     _putRaw_QWORD(size, encodeCtx)
   }
 }
 
-function _encodeInCtx_Number(value, encodeCtx)
-{
-  if (((value % 1) == 0) && Math.abs(value) <= 0xffffffff)
-  {
+function _encodeInCtx_Number(value, encodeCtx) {
+  if (((value % 1) == 0) && Math.abs(value) <= 0xffffffff) {
     // Integer number.
-    if (value == 0)
-    {
+    if (value == 0) {
       // Strict integer zero.
       _putRaw_BYTE(K.BJSON.DATATYPE_STRICT_INTEGER_ZERO, encodeCtx)
-    }
-    else if (value == 1)
-    {
+    } else if (value == 1) {
       // Strict integer one.
       _putRaw_BYTE(K.BJSON.DATATYPE_STRICT_INTEGER_ONE, encodeCtx)
-    }
-    else if (value < 0)
-    {
+    } else if (value < 0) {
       // Negative integer.
       _encodeInCtx_SizedDataType(
         K.BJSON.DATATYPE_NEGATIVE_INTEGER_BASE,
         -value,
         encodeCtx)
-    }
-    else
-    {
+    } else {
       // Positive integer.
       _encodeInCtx_SizedDataType(
         K.BJSON.DATATYPE_POSITIVE_INTEGER_BASE,
         value,
         encodeCtx)
     }
-  }
-  else
-  {
+  } else {
     // Float or integer breaking the 32-bit limit (uint32).
     // Because javascript stores all numbers as 64-bit floats, there is no
     // way to encode 64-bit integers.
@@ -236,15 +193,11 @@ function _encodeInCtx_Number(value, encodeCtx)
   }
 }
 
-function _encodeInCtx_String(value, encodeCtx)
-{
-  if (value == '')
-  {
+function _encodeInCtx_String(value, encodeCtx) {
+  if (value == '') {
     // Special case - empty string.
     _putRaw_BYTE(K.BJSON.DATATYPE_EMPTY_STRING, encodeCtx)
-  }
-  else
-  {
+  } else {
     // Calculate number of bytes needed to encode input string as utf8.
     const stringBufferSize = Buffer.byteLength(value, 'utf8')
 
@@ -256,8 +209,7 @@ function _encodeInCtx_String(value, encodeCtx)
       encodeCtx)
 
     // String body (utf8 *WITHOUT* zero terminator).
-    if (BJSON_ENCODE_LOGS_LEVEL > 0)
-    {
+    if (BJSON_ENCODE_LOGS_LEVEL > 0) {
       K.BJSON._debugLog(
         'going to put',
         stringBufferSize,
@@ -271,29 +223,24 @@ function _encodeInCtx_String(value, encodeCtx)
   }
 }
 
-function _encodeInCtx_ArrayBody(arrayObject, encodeCtx)
-{
+function _encodeInCtx_ArrayBody(arrayObject, encodeCtx) {
   // Encode array body:
   // <item0>, <item1>, <item2>, ...
-  for (let idx = 0; idx < arrayObject.length; idx++)
-  {
+  for (let idx = 0; idx < arrayObject.length; idx++) {
     _encodeInCtx(arrayObject[idx], encodeCtx)
   }
 }
 
-function _encodeInCtx_MapBody(mapObject, encodeCtx)
-{
+function _encodeInCtx_MapBody(mapObject, encodeCtx) {
   // Map body:
   // <key0>, <value0>, <key1>, <value1>, ...
-  for (let key in mapObject)
-  {
+  for (let key in mapObject) {
     _encodeInCtx(key, encodeCtx)
     _encodeInCtx(mapObject[key], encodeCtx)
   }
 }
 
-function _encodeInCtx_ArrayOrMap(value, encodeCtx)
-{
+function _encodeInCtx_ArrayOrMap(value, encodeCtx) {
   // We don't know data size yet, so we reserve room for
   // pesimistic 32-bit size scenario. We'll compact it at the
   // last step if possible.
@@ -304,13 +251,10 @@ function _encodeInCtx_ArrayOrMap(value, encodeCtx)
   _setOutDataPointer(bodyOffset, encodeCtx)
 
   // Encode map/array body.
-  if (value instanceof Array)
-  {
+  if (value instanceof Array) {
     _encodeInCtx_ArrayBody(value, encodeCtx)
     dataTypeBase = K.BJSON.DATATYPE_ARRAY_BASE
-  }
-  else
-  {
+  } else {
     _encodeInCtx_MapBody(value, encodeCtx)
     dataTypeBase = K.BJSON.DATATYPE_MAP_BASE
   }
@@ -334,16 +278,14 @@ function _encodeInCtx_ArrayOrMap(value, encodeCtx)
 
   const newBodyOffset = headerOffset + headerByteLen
 
-  if (headerByteLen < 4)
-  {
+  if (headerByteLen < 4) {
     _outDataCopy(newBodyOffset, bodyOffset, bodyByteLen, encodeCtx)
   }
 
   _setOutDataPointer(headerOffset + headerByteLen + bodyByteLen, encodeCtx)
 }
 
-function _encodeInCtx_Binary(arrayBufferObject, encodeCtx)
-{
+function _encodeInCtx_Binary(arrayBufferObject, encodeCtx) {
   const byteLen = arrayBufferObject.byteLength
 
   // Binary blob header:
@@ -367,36 +309,28 @@ function _encodeInCtx_Binary(arrayBufferObject, encodeCtx)
   encodeCtx.outDataSize += byteLen
 }
 
-function _encodeInCtx_Object(value, encodeCtx)
-{
+function _encodeInCtx_Object(value, encodeCtx) {
   // Dispatch object type.
-  if (value instanceof ArrayBuffer)
-  {
+  if (value instanceof ArrayBuffer) {
     // Typed array - encode as DATATYPE_BINARYxx type.
     _encodeInCtx_Binary(value, encodeCtx)
-  }
-  else if (value != null)
-  {
+  } else if (value != null) {
     // Array - encode as DATATYPE_ARRAYxx type.
     // Map   - encode as DATATYPE_MAPxx type.
     _encodeInCtx_ArrayOrMap(value, encodeCtx)
-  }
-  else
-  {
+  } else {
     // Null - encode as DATATYPE_NULL.
     _encodeInCtx_Null(encodeCtx)
   }
 }
 
-function _encodeInCtx(inData, encodeCtx)
-{
+function _encodeInCtx(inData, encodeCtx) {
   // Dispatch input data type to proper encodeXxx() function.
-  switch(typeof inData)
-  {
-    case 'object' : {_encodeInCtx_Object(inData, encodeCtx); break}
-    case 'number' : {_encodeInCtx_Number(inData, encodeCtx); break}
+  switch(typeof inData) {
+    case 'object': {_encodeInCtx_Object(inData, encodeCtx); break}
+    case 'number': {_encodeInCtx_Number(inData, encodeCtx); break}
     case 'boolean': {_encodeInCtx_Boolean(inData, encodeCtx); break}
-    case 'string' : {_encodeInCtx_String(inData, encodeCtx); break}
+    case 'string': {_encodeInCtx_String(inData, encodeCtx); break}
 
     default:
     {
@@ -416,8 +350,7 @@ function _encodeInCtx(inData, encodeCtx)
 //
 // --------------------------------------------------------------------------
 
-function encode(object, callerCtx = {})
-{
+function encode(object, callerCtx = {}) {
   let encodeCtx = K.Object.deepClone(callerCtx)
 
   encodeCtx.outDataCapacity = 1024
