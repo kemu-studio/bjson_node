@@ -38,7 +38,7 @@ function _prepareOutDataBuffer(numberOfExtraBytesNeeded, encodeCtx) {
     // Not enough space - resize buffer.
     const oldOutData          = encodeCtx.outData
     encodeCtx.outDataCapacity = Math.max(encodeCtx.outDataCapacity * 2, encodeCtx.outDataCapacity + numberOfExtraBytesNeeded)
-    encodeCtx.outData         = new Buffer(encodeCtx.outDataCapacity)
+    encodeCtx.outData         = Buffer.alloc(encodeCtx.outDataCapacity)
 
     oldOutData.copy(encodeCtx.outData, 0, 0, encodeCtx.outDataSize)
 
@@ -377,7 +377,7 @@ function encode(object, callerCtx = {}) {
 
   encodeCtx.outDataCapacity = 1024
   encodeCtx.outDataSize     = 0
-  encodeCtx.outData         = new Buffer(encodeCtx.outDataCapacity)
+  encodeCtx.outData         = Buffer.alloc(encodeCtx.outDataCapacity)
 
   _encodeInCtx(object, encodeCtx)
 
