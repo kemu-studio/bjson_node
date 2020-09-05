@@ -1,0 +1,34 @@
+{
+  "name": "bjson_node",
+  "version": "1.0.0",
+  "description": "BJSON: binary JSON for node.js (encoder/decoder)",
+  "main": "src/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kemu-studio/bjson_node.git"
+  },
+  "keywords": [
+    "binary",
+    "json",
+    "encoder",
+    "decoder"
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kemu-studio/bjson_node/issues"
+  },
+  "homepage": "https://github.com/kemu-studio/bjson_node#readme",
+  "dependencies": {
+    "kcore": "^0.15.1"
+  },
+  "devDependencies": {
+    "mocha": "^8.1.3",
+    "should": "^13.2.3"
+  }
+}
