@@ -7,7 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test":  "cd tests && node 01_test_all.js",
+    "clean": "cd tests && node 00_clean.js"
   },
   "repository": {
     "type": "git",
