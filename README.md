@@ -1,10 +1,15 @@
-# bjson_node: binary JSON for node.js (encoder/decoder)
-- The reference BJSON implementation for JavaScript,
-- For C/C++ implementation please visit https://github.com/kemu-studio/bjson_c,
-- For protocol details please visit http://bjson.org/.
+[![NPM version](http://img.shields.io/npm/v/@kmu/bjson_node?style=flat)](https://npmjs.org/package/@kmu/bjson_node)
+[![Git Commit](https://img.shields.io/github/last-commit/kemu-studio/bjson_node?style=flat)](https://github.com/kemu-studio/bjson_node/commits/master)
+<!-- [![Git Releases](https://img.shields.io/github/release/kemu-studio/bjson_node?style=flat)](https://github.com/kemu-studio/bjson_node/releases) -->
+<!-- [![CircleCI](https://circleci.com/gh/yosheeck/bb_code_2.svg?style=svg)](https://app.circleci.com/pipelines/github/yosheeck/bb_code_2) -->
 
-## Usage
-### Encoding example
+# bjson_node: binary JSON for node.js (encoder/decoder)
+This is reference BJSON implementation for JavaScript.
+- for protocol details please visit http://bjson.org
+- for C/C++ implementation please visit https://github.com/kemu-studio/bjson_c
+
+# Usage
+## Encoding example
 ```javascript
   // Import KBJSON module.
   const kbjson = require('kbjson')
@@ -22,7 +27,7 @@
   console.log(buf)
 ```
 
-### Decoding example
+## Decoding example
 ```javascript
   // Import KBJSON module.
   const kbjson = require('kbjson')
@@ -44,7 +49,7 @@
   console.log(plainData)
 ```
 
-## Limitation
+# Limitations
 Because JS stores all numbers as 64-bit float there is no way to encode
 pure 64-bit integer. Maximum integer is limited by amount of bits used to
 store mantisa part, that stays for 53bits for 64-bit floats (double).
