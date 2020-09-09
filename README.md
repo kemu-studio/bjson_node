@@ -11,16 +11,16 @@ This is reference BJSON implementation for JavaScript.
 # Usage
 ## Encoding example
 ```javascript
-  // Import KBJSON module.
-  const kbjson = require('kbjson')
-  
+  // Import BJSON module.
+  const bjson = require('@kmu/bjson_node')
+
   // Encode example JSON object into binary buffer.
-  const buf = kbjson.encode({
+  const buf = bjson.encode({
     x: 1,
     y: 3.14,
     z: 'hello from BJSON'
   })
-  
+
   // Show encoded data.
   // This line should prints out JSON document encoded as binary data:
   // <Buffer 24 25 10 01 78 1b 10 01 79 0f 1f 85 eb 51 b8 1e 09 40 10 01 7a 10 10 68 65 6c 6c 6f 20 66 72 6f 6d 20 42 4a 53 4f 4e>
@@ -29,8 +29,8 @@ This is reference BJSON implementation for JavaScript.
 
 ## Decoding example
 ```javascript
-  // Import KBJSON module.
-  const kbjson = require('kbjson')
+  // Import BJSON module.
+  const bjson = require('@kmu/bjson_node')
 
   // Decode binary buffer generated in encoder example above.
   const encodedData = Buffer.from([
@@ -41,7 +41,7 @@ This is reference BJSON implementation for JavaScript.
     0x6d, 0x20, 0x42, 0x4a, 0x53, 0x4f, 0x4e
   ])
 
-  const plainData = kbjson.decode(encodedData)
+  const plainData = bjson.decode(encodedData)
 
   // Show decoded JSON document.
   // This line should prints out plain JSON data build from binary buffer:
