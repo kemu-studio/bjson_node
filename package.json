@@ -8,7 +8,9 @@
   },
   "scripts": {
     "test":  "cd tests && node 01_test_all.js",
-    "clean": "cd tests && node 00_clean.js"
+    "clean": "cd tests && node 00_clean.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
