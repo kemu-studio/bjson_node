@@ -1,7 +1,7 @@
 [![NPM version](http://img.shields.io/npm/v/@kmu/bjson_node?style=flat)](https://npmjs.org/package/@kmu/bjson_node)
 [![Git Commit](https://img.shields.io/github/last-commit/kemu-studio/bjson_node?style=flat)](https://github.com/kemu-studio/bjson_node/commits/master)
+[![CircleCI](https://circleci.com/gh/kemu-studio/bjson_node.svg?style=svg)](https://app.circleci.com/pipelines/github/kemu-studio/bjson_node)
 <!-- [![Git Releases](https://img.shields.io/github/release/kemu-studio/bjson_node?style=flat)](https://github.com/kemu-studio/bjson_node/releases) -->
-<!-- [![CircleCI](https://circleci.com/gh/yosheeck/bb_code_2.svg?style=svg)](https://app.circleci.com/pipelines/github/yosheeck/bb_code_2) -->
 
 # bjson_node: binary JSON for node.js (encoder/decoder)
 This is reference BJSON implementation for JavaScript.
