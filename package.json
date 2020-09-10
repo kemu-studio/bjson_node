@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test":  "cd tests && node 01_test_all.js",
+    "test": "cd tests && node 01_test_all.js",
     "clean": "cd tests && node 00_clean.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
@@ -31,6 +31,7 @@
     "kcore": "^0.15.1"
   },
   "devDependencies": {
+    "eslint": "^7.8.1",
     "mocha": "^8.1.3",
     "should": "^13.2.3"
   }
