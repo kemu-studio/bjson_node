@@ -22,7 +22,7 @@ This is reference BJSON implementation for JavaScript.
   })
 
   // Show encoded data.
-  // This line should prints out JSON document encoded as binary data:
+  // This line should print out JSON document encoded as binary data:
   // <Buffer 24 25 10 01 78 1b 10 01 79 0f 1f 85 eb 51 b8 1e 09 40 10 01 7a 10 10 68 65 6c 6c 6f 20 66 72 6f 6d 20 42 4a 53 4f 4e>
   console.log(buf)
 ```

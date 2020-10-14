@@ -1,5 +1,6 @@
 {
-  "name": "bjson_node",
+  "name": "@kmu/bjson_node",
+  "author": "Yosh Kemu <y@ke.mu> (http://yosh.ke.mu/)",
   "version": "1.0.0",
   "description": "BJSON: binary JSON for node.js (encoder/decoder)",
   "main": "src/index.js",
